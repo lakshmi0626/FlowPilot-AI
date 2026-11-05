@@ -110,9 +110,16 @@ public class WorkflowEngineService {
                 if (currentNode == null && nodesNode.size() > 0) {
                     currentNode = nodesNode.get(0);
                 }
+            } else if (fromNodeKey != null) {
+                // Resume from next node following fromNodeKey
+                currentNode = findNextNode(fromNodeKey, edgesNode, nodesNode, previousDecision);
+                if (currentNode == null) {
+                    // Fallback to any edge without condition
+                    currentNode = findNextNode(fromNodeKey, edgesNode, nodesNode, null);
+                }
             }
 
-            // If we are starting, advance through nodes
+            // If we have an active node, advance through nodes
             while (currentNode != null) {
                 String nodeKey = currentNode.has("id") ? currentNode.get("id").asText() : "node";
                 String nodeType = currentNode.has("type") ? currentNode.get("type").asText().toUpperCase() : "TASK";
@@ -242,9 +249,6 @@ public class WorkflowEngineService {
                     "Approval granted by manager. Notes: " + (notes != null ? notes : "Approved"), null
             ));
 
-            // Resume next nodes
-            completeExecution(execution, "Workflow resumed and successfully completed after approval.");
-
             notificationService.sendNotification(
                     execution.getOrganizationId(),
                     execution.getTriggeredByUserId(),
@@ -253,6 +257,12 @@ public class WorkflowEngineService {
                     NotificationType.REQUEST_APPROVED,
                     "/approvals"
             );
+
+            // Resume and process remaining nodes
+            execution.setStatus(ExecutionStatus.RUNNING);
+            executionRepository.save(execution);
+            processWorkflow(execution, workflow, execution.getCurrentNodeKey(), "APPROVED");
+
         } else if (decision == ApprovalStatus.REJECTED) {
             execution.setStatus(ExecutionStatus.REJECTED);
             execution.setCompletedAt(LocalDateTime.now());

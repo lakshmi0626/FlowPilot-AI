@@ -18,10 +18,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
+          cache-dependency-path: backend/pom.xml
+      - name: Build and Test with Maven
         run: |
           cd backend
-          mvn clean test package -DskipTests=false
+          mvn clean test package
 
   frontend-build-test:
     name: Frontend Build & Test
