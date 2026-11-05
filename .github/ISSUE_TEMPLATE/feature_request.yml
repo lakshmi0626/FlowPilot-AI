@@ -1,0 +1,19 @@
+name: Feature Request
+description: Suggest an enhancement or new capability for FlowPilot AI
+title: "[FEAT] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What business or user problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the design and technical approach
+    validations:
+      required: true

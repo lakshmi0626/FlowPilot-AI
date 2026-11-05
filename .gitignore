@@ -1,0 +1,29 @@
+# Target build directories
+**/target/
+**/build/
+**/dist/
+**/node_modules/
+*.class
+
+# Package locks & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# IDE & OS files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+
+# Environment variables & local data
+.env
+.env.local
+.env.production.local
+*.h2.db
+data/
