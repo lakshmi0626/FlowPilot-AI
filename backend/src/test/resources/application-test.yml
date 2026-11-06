@@ -2,3 +2,7 @@ spring:
   h2:
     console:
       enabled: false
+
+flowpilot:
+  jwt:
+    secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=

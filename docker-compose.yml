@@ -1,21 +1,19 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: flowpilot-postgres
     restart: always
     environment:
-      POSTGRES_DB: flowpilot
-      POSTGRES_USER: flowpilot_user
-      POSTGRES_PASSWORD: flowpilot_secure_pass_2026
+      POSTGRES_DB: ${DB_NAME:?DB_NAME must be set}
+      POSTGRES_USER: ${DB_USERNAME:?DB_USERNAME must be set}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/migrations:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U flowpilot_user -d flowpilot"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -33,10 +31,10 @@ services:
       SPRING_PROFILES_ACTIVE: postgres
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: flowpilot
-      DB_USERNAME: flowpilot_user
-      DB_PASSWORD: flowpilot_secure_pass_2026
-      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      DB_NAME: ${DB_NAME:?DB_NAME must be set}
+      DB_USERNAME: ${DB_USERNAME:?DB_USERNAME must be set}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
     ports:
       - "8080:8080"
 
